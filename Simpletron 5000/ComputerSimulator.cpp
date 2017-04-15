@@ -68,7 +68,7 @@ void ComputerSimulator::getInstructions()
 			cout << "*** Invalid Input ***" << endl;
 		}
 	} while (temp != -99999 && counter < TOTAL_MEMORY); // sentinel/counter
-	cout << "*** Program loading completed ***" << endl;
+	cout << "*** Program Loading Completed ***" << endl;
 }
 
 // brief: dumps registers and memory to screen
@@ -77,13 +77,13 @@ void ComputerSimulator::getInstructions()
 void ComputerSimulator::regiserAndMemoryDump()
 {
 	cout << "REGISTERS:" << endl;
-	cout << "accumulator: " << setw(5) << setfill('0') << std::internal << std::showpos << this->mAccumulator  << endl;
-	cout << "instructionCounter: " << setw(2) << noshowpos << this->mInstructionCounter << endl;
-	cout << "instructionRegister: "  << setw(5) << showpos << this->mInstructionRegister << endl;
-	cout << "operationCode: " << setw(2) << noshowpos << this->mOperationCode << endl;
-	cout << "operand: " << setw(2) << noshowpos << this->mOperand << endl;
+	cout << "Accumulator: " << setw(5) << setfill('0') << std::internal << std::showpos << this->mAccumulator  << endl;
+	cout << "InstructionCounter: " << setw(2) << noshowpos << this->mInstructionCounter << endl;
+	cout << "InstructionRegister: "  << setw(5) << showpos << this->mInstructionRegister << endl;
+	cout << "OperationCode: " << setw(2) << noshowpos << this->mOperationCode << endl;
+	cout << "Operand: " << setw(2) << noshowpos << this->mOperand << endl;
 	
-	cout << endl << "Memory:" << endl;
+	cout << endl << "MEMORY:" << endl;
 	cout << "   " << setfill(' ');
 	for (int i = 0; i < 10; i++)
 	{
@@ -134,6 +134,9 @@ void ComputerSimulator::runInstructions()
 		case MULTIPLY:
 			multiply();
 			break;
+		case MODULUS:
+			modulus();
+			break;
 		case BRANCH:
 			branch();
 			break;
@@ -148,7 +151,7 @@ void ComputerSimulator::runInstructions()
 			break;
 		default: // breaks out and calls a memory dump with an invalid instruction
 			cout << "*** Invalid Operation Code ***" << endl;
-			cout << "*** Simpletron execution abnormally terminated ***" << endl;
+			cout << "*** Simpletron Execution Abnormally Terminated ***" << endl;
 			halt();
 			break;
 		}
@@ -157,7 +160,7 @@ void ComputerSimulator::runInstructions()
 	else
 	{
 		cout << "*** Invalid Memory Location ***" << endl;
-		cout << "*** Simpletron execution abnormally terminated ***" << endl;
+		cout << "*** Simpletron Execution Abnormally Terminated ***" << endl;
 		halt();
 	}
 }
@@ -178,7 +181,7 @@ void ComputerSimulator::splitInstructionWord()
 // precons: Instructions have been loaded into memory
 void ComputerSimulator::runProgram() 
 {
-	cout << "*** Program execution begins ***" << endl;
+	cout << "*** Program Execution Begins ***" << endl;
 	while (this->mInstructionCounter < TOTAL_MEMORY)
 	{
 		splitInstructionWord();
@@ -231,7 +234,7 @@ void ComputerSimulator::add()
 	{
 		mAccumulator = 0;
 		cout << "*** Accumulator Overflow ***" << endl;
-		cout << "*** Simpletron execution abnormally terminated ***" << endl;
+		cout << "*** Simpletron Execution Abnormally Terminated ***" << endl;
 		halt();
 	}
 }
@@ -253,8 +256,8 @@ void ComputerSimulator::divide()
 {
 	if (mMemory[this->mOperand] == 0)
 	{
-		cout << "*** Attempt to divide by zero ***" << endl;
-		cout << "*** Simpletron execution abnormally terminated ***" << endl;
+		cout << "*** Attempt to Divide by Zero ***" << endl;
+		cout << "*** Simpletron Execution Abnormally Terminated ***" << endl;
 		halt();
 	}
 	else
@@ -274,8 +277,26 @@ void ComputerSimulator::multiply()
 	{
 		mAccumulator = 0;
 		cout << "*** Accumulator Overflow ***" << endl;
-		cout << "*** Simpletron execution abnormally terminated ***" << endl;
+		cout << "*** Simpletron Execution Abnormally Terminated ***" << endl;
 		halt();
+	}
+}
+
+// brief: Modulus a word from a specific location in memory into the
+//			word in the accumulator(leave result in accumulator).
+// return: none
+// precons: current instruction has been divided into operand, and code
+void ComputerSimulator::modulus()
+{
+	if (mMemory[this->mOperand] == 0)
+	{
+		cout << "*** Attempt to Modulus by Zero ***" << endl;
+		cout << "*** Simpletron Execution Abnormally Terminated ***" << endl;
+		halt();
+	}
+	else
+	{
+		mAccumulator %= mMemory[this->mOperand];
 	}
 }
 

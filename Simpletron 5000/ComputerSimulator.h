@@ -20,6 +20,7 @@ using std::setfill;
 #define SUBTRACT 31
 #define DIVIDE 32
 #define MULTIPLY 33
+#define MODULUS 34
 #define BRANCH 40
 #define BRANCHNEG 41
 #define BRANCHZERO 42
@@ -57,6 +58,7 @@ private:
 	void subtract();
 	void divide();
 	void multiply();
+	void modulus();
 	void branch();
 	void branchNeg();
 	void branchZero();
