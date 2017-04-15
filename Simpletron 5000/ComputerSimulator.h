@@ -12,6 +12,8 @@ using std::noshowpos;
 using std::setfill;
 
 #define TOTAL_MEMORY 1000
+#define MAX_SIZE 99999
+#define EXIT_CODE -999999
 #define READ 10
 #define WRITE 11
 #define LOAD 20
@@ -21,6 +23,7 @@ using std::setfill;
 #define DIVIDE 32
 #define MULTIPLY 33
 #define MODULUS 34
+#define EXPONENTIATION 35
 #define BRANCH 40
 #define BRANCHNEG 41
 #define BRANCHZERO 42
@@ -59,6 +62,7 @@ private:
 	void divide();
 	void multiply();
 	void modulus();
+	void exponentiation();
 	void branch();
 	void branchNeg();
 	void branchZero();

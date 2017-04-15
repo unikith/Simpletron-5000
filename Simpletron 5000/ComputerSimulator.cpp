@@ -41,7 +41,7 @@ void ComputerSimulator::printPrompt()
 	cout << "*** (or data word) at a time. I will type the ***" << endl;
 	cout << "*** location number and a question mark (?). ***" << endl;
 	cout << "*** You then type the word for that location. ***" << endl;
-	cout << "*** Type the sentinel -99999 to stop entering ***" << endl;
+	cout << "*** Type the sentinel " << EXIT_CODE << " to stop entering ***" << endl;
 	cout << "*** your program. ***" << endl;
 }
 
@@ -54,20 +54,22 @@ void ComputerSimulator::getInstructions()
 	int temp = 0, counter = 0;
 	do
 	{
-		if (counter < 10) // keeps memory num as two digit
-			cout << 0;
+		//if (counter < 10) // keeps memory num as two digit
+		//	cout << 0;
+		cout << setfill('0') << setw(3); // keeps memory num as 3 digits
 		cout << counter << " ? "; // prompt for input
 		cin >> temp;
-		if (temp < 10000 && temp > -10000) // only inserts into memory if less than 5 digits
+		if (temp <= MAX_SIZE && temp >= -MAX_SIZE) // only inserts into memory if less than 5 digits
 		{
 			this->mMemory[counter] = temp;
 			++counter;
 		}
-		else if (temp != -99999)
+		else if (temp != EXIT_CODE)
 		{
 			cout << "*** Invalid Input ***" << endl;
 		}
-	} while (temp != -99999 && counter < TOTAL_MEMORY); // sentinel/counter
+	} while (temp != EXIT_CODE && counter < TOTAL_MEMORY); // sentinel/counter
+	cout << setw(0);
 	cout << "*** Program Loading Completed ***" << endl;
 }
 
@@ -76,6 +78,8 @@ void ComputerSimulator::getInstructions()
 // precons: none
 void ComputerSimulator::regiserAndMemoryDump()
 {
+	cout << "*** Preparing to Dump Memory ***" << endl;
+	system("pause");
 	cout << "REGISTERS:" << endl;
 	cout << "Accumulator: " << setw(5) << setfill('0') << std::internal << std::showpos << this->mAccumulator  << endl;
 	cout << "InstructionCounter: " << setw(2) << noshowpos << this->mInstructionCounter << endl;
@@ -84,10 +88,10 @@ void ComputerSimulator::regiserAndMemoryDump()
 	cout << "Operand: " << setw(2) << noshowpos << this->mOperand << endl;
 	
 	cout << endl << "MEMORY:" << endl;
-	cout << "   " << setfill(' ');
+	cout << "    " << setfill(' ');
 	for (int i = 0; i < 10; i++)
 	{
-		cout << setw(5) << i << " ";
+		cout << setw(6) << i << " ";
 	}
 	for (int i = 0; i < TOTAL_MEMORY; i++)
 	{
@@ -95,7 +99,7 @@ void ComputerSimulator::regiserAndMemoryDump()
 		{
 			cout << endl << setw(3) << setfill(' ') << noshowpos << (i / 10) * 10 << " ";
 		}
-		cout << setw(5) << setfill('0') << showpos << this->mMemory[i] << ' ';
+		cout << setw(6) << setfill('0') << showpos << this->mMemory[i] << ' ';
 	}
 	cout << endl;
 
@@ -137,6 +141,9 @@ void ComputerSimulator::runInstructions()
 		case MODULUS:
 			modulus();
 			break;
+		case EXPONENTIATION:
+			exponentiation();
+			break;
 		case BRANCH:
 			branch();
 			break;
@@ -172,8 +179,8 @@ void ComputerSimulator::runInstructions()
 void ComputerSimulator::splitInstructionWord()
 {
 	this->mInstructionRegister = this->mMemory[this->mInstructionCounter];
-	this->mOperationCode = mInstructionRegister / 100;
-	this->mOperand = mInstructionRegister % 100;
+	this->mOperationCode = mInstructionRegister / 1000;
+	this->mOperand = mInstructionRegister % 1000;
 }
 
 // brief: runs program from memory
@@ -230,7 +237,7 @@ void ComputerSimulator::store()
 void ComputerSimulator::add()
 {
 	mAccumulator += mMemory[this->mOperand];
-	if (mAccumulator > 9999 || mAccumulator < -9999)
+	if (mAccumulator > MAX_SIZE || mAccumulator < -MAX_SIZE)
 	{
 		mAccumulator = 0;
 		cout << "*** Accumulator Overflow ***" << endl;
@@ -273,7 +280,7 @@ void ComputerSimulator::divide()
 void ComputerSimulator::multiply()
 {
 	mAccumulator *= mMemory[this->mOperand];
-	if (mAccumulator > 9999 || mAccumulator < -9999)
+	if (mAccumulator > MAX_SIZE || mAccumulator < -MAX_SIZE)
 	{
 		mAccumulator = 0;
 		cout << "*** Accumulator Overflow ***" << endl;
@@ -297,6 +304,33 @@ void ComputerSimulator::modulus()
 	else
 	{
 		mAccumulator %= mMemory[this->mOperand];
+	}
+}
+
+// brief: Branch to a specific location in memory.
+// return: none
+// precons: current instruction has been divided into operand, and code
+void ComputerSimulator::exponentiation()
+{
+	if (mOperand == 0)
+	{
+		mAccumulator = 1;
+	}
+	else
+	{
+		int temp = mAccumulator;
+		for (int i = 0; i < mOperand; ++i)
+		{
+			mAccumulator *= temp;
+		}
+
+		if (mAccumulator > MAX_SIZE || mAccumulator < -MAX_SIZE)
+		{
+			mAccumulator = 0;
+			cout << "*** Accumulator Overflow ***" << endl;
+			cout << "*** Simpletron Execution Abnormally Terminated ***" << endl;
+			halt();
+		}
 	}
 }
 
