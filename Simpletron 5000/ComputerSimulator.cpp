@@ -120,6 +120,9 @@ void ComputerSimulator::runInstructions()
 		case WRITE:
 			write();
 			break;
+		case NEWLINE:
+			newLine();
+			break;
 		case LOAD:
 			load();
 			break;
@@ -211,7 +214,15 @@ void ComputerSimulator::read()
 // precons: current instruction has been divided into operand, and code
 void ComputerSimulator::write()
 {
-	cout << mMemory[this->mOperand] << endl;
+	cout << mMemory[this->mOperand];
+}
+
+// brief: writes a newline to the screen
+// return: none
+// precons: current instruction has been divided into operand, and code
+void ComputerSimulator::newLine()
+{
+	cout << endl;
 }
 
 // brief: Load a word from a specific location in memory into the accumulator

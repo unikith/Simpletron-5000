@@ -16,6 +16,7 @@ using std::setfill;
 #define EXIT_CODE -999999
 #define READ 10
 #define WRITE 11
+#define NEWLINE 12
 #define LOAD 20
 #define STORE 21
 #define ADD 30
@@ -55,6 +56,7 @@ private:
 	// functions for SML operations
 	void read();
 	void write();
+	void newLine();
 	void load();
 	void store();
 	void add();
