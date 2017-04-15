@@ -11,6 +11,7 @@ using std::setw;
 using std::showpos;
 using std::noshowpos;
 using std::setfill;
+using std::internal;
 
 #define TOTAL_MEMORY 1000
 #define MAX_SIZE 99999

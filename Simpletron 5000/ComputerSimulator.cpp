@@ -81,7 +81,7 @@ void ComputerSimulator::regiserAndMemoryDump()
 	cout << "*** Preparing to Dump Memory ***" << endl;
 	system("pause");
 	cout << "REGISTERS:" << endl;
-	cout << "Accumulator: " << setw(5) << setfill('0') << std::internal << std::showpos << this->mAccumulator  << endl;
+	cout << "Accumulator: " << setw(5) << setfill('0') << internal << showpos << this->mAccumulator  << endl;
 	cout << "InstructionCounter: " << setw(2) << noshowpos << this->mInstructionCounter << endl;
 	cout << "InstructionRegister: "  << setw(5) << showpos << this->mInstructionRegister << endl;
 	cout << "OperationCode: " << setw(2) << noshowpos << this->mOperationCode << endl;
