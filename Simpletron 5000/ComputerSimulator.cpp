@@ -323,25 +323,14 @@ void ComputerSimulator::modulus()
 // precons: current instruction has been divided into operand, and code
 void ComputerSimulator::exponentiation()
 {
-	if (mOperand == 0)
-	{
-		mAccumulator = 1;
-	}
-	else
-	{
-		int temp = mAccumulator;
-		for (int i = 0; i < mOperand; ++i)
-		{
-			mAccumulator *= temp;
-		}
+	mAccumulator = pow(mAccumulator, mOperand);
 
-		if (mAccumulator > MAX_SIZE || mAccumulator < -MAX_SIZE)
-		{
-			mAccumulator = 0;
-			cout << "*** Accumulator Overflow ***" << endl;
-			cout << "*** Simpletron Execution Abnormally Terminated ***" << endl;
-			halt();
-		}
+	if (mAccumulator > MAX_SIZE || mAccumulator < -MAX_SIZE)
+	{
+		mAccumulator = 0;
+		cout << "*** Accumulator Overflow ***" << endl;
+		cout << "*** Simpletron Execution Abnormally Terminated ***" << endl;
+		halt();
 	}
 }
 
