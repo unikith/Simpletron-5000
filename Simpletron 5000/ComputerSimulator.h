@@ -11,7 +11,7 @@ using std::showpos;
 using std::noshowpos;
 using std::setfill;
 
-#define TOTAL_MEMORY 100
+#define TOTAL_MEMORY 1000
 #define READ 10
 #define WRITE 11
 #define LOAD 20
