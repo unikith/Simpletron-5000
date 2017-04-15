@@ -67,7 +67,7 @@ void ComputerSimulator::getInstructions()
 		{
 			cout << "*** Invalid Input ***" << endl;
 		}
-	} while (temp != -99999 && counter < 100); // sentinel/counter
+	} while (temp != -99999 && counter < TOTAL_MEMORY); // sentinel/counter
 	cout << "*** Program loading completed ***" << endl;
 }
 
@@ -89,11 +89,11 @@ void ComputerSimulator::regiserAndMemoryDump()
 	{
 		cout << setw(5) << i << " ";
 	}
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < TOTAL_MEMORY; i++)
 	{
 		if (i % 10 == 0)
 		{
-			cout << endl << setw(2) << setfill(' ') << noshowpos << (i / 10) * 10 << " ";
+			cout << endl << setw(3) << setfill(' ') << noshowpos << (i / 10) * 10 << " ";
 		}
 		cout << setw(5) << setfill('0') << showpos << this->mMemory[i] << ' ';
 	}
