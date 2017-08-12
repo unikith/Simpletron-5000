@@ -41,7 +41,7 @@ void ComputerSimulator::printPrompt()
 	cout << "*** (or data word) at a time. I will type the ***" << endl;
 	cout << "*** location number and a question mark (?). ***" << endl;
 	cout << "*** You then type the word for that location. ***" << endl;
-	cout << "*** Type the sentinel -99999 to stop entering ***" << endl;
+	cout << "*** Type the sentinel " << EXIT_CODE << " to stop entering ***" << endl;
 	cout << "*** your program. ***" << endl;
 }
 
@@ -54,20 +54,23 @@ void ComputerSimulator::getInstructions()
 	int temp = 0, counter = 0;
 	do
 	{
-		if (counter < 10) // keeps memory num as two digit
-			cout << 0;
+		//if (counter < 10) // keeps memory num as two digit
+		//	cout << 0;
+		cout.width(MEMORY_DIGITS - 1); // keeps memory num as two digit
+		cout.fill('0');
+
 		cout << counter << " ? "; // prompt for input
 		cin >> temp;
-		if (temp < 10000 && temp > -10000) // only inserts into memory if less than 5 digits
+		if (temp <= MAX_WORD_SIZE && temp >= MIN_WORD_SIZE) // only inserts into memory if less than 5 digits
 		{
 			this->mMemory[counter] = temp;
 			++counter;
 		}
-		else if (temp != -99999)
+		else if (temp != EXIT_CODE)
 		{
 			cout << "*** Invalid Input ***" << endl;
 		}
-	} while (temp != -99999 && counter < 100); // sentinel/counter
+	} while (temp != EXIT_CODE && counter < TOTAL_MEMORY); // sentinel/counter
 	cout << "*** Program loading completed ***" << endl;
 }
 
@@ -151,7 +154,7 @@ void ComputerSimulator::runInstructions()
 			cout << "*** Simpletron execution abnormally terminated ***" << endl;
 			halt();
 			break;
-		}
+		} // end switch
 	} //if(mOperand < TOTAL_MEMORY)
 
 	else
@@ -159,7 +162,7 @@ void ComputerSimulator::runInstructions()
 		cout << "*** Invalid Memory Location ***" << endl;
 		cout << "*** Simpletron execution abnormally terminated ***" << endl;
 		halt();
-	}
+	} // end else
 }
 
 // brief: loads current instruction splits current instruction and 
@@ -227,7 +230,7 @@ void ComputerSimulator::store()
 void ComputerSimulator::add()
 {
 	mAccumulator += mMemory[this->mOperand];
-	if (mAccumulator > 9999 || mAccumulator < -9999)
+	if (mAccumulator > MAX_WORD_SIZE || mAccumulator < MIN_WORD_SIZE)
 	{
 		mAccumulator = 0;
 		cout << "*** Accumulator Overflow ***" << endl;
@@ -243,6 +246,12 @@ void ComputerSimulator::add()
 void ComputerSimulator::subtract()
 {
 	mAccumulator -= mMemory[this->mOperand];
+	if (mAccumulator < MIN_WORD_SIZE)
+	{
+		cout << "*** Accumulator Underflow ***" << endl;
+		cout << "*** Simpletron execution abnormally terminated ***" << endl;
+		halt();
+	}
 }
 
 // brief: Divide a word from a specific location in memory into the

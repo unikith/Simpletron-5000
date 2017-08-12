@@ -12,6 +12,10 @@ using std::noshowpos;
 using std::setfill;
 
 #define TOTAL_MEMORY 100
+#define MAX_WORD_SIZE 9999
+#define MIN_WORD_SIZE -9999
+#define EXIT_CODE -99999
+#define MEMORY_DIGITS 3
 #define READ 10
 #define WRITE 11
 #define LOAD 20
