@@ -6,7 +6,7 @@
 //brief: constructs the computer
 //return: none
 //precons: none
-ComputerSimulator::ComputerSimulator() 
+ComputerSimulator::ComputerSimulator(const char * fileName) : mLoadFile(fileName)
 {
 	this->mAccumulator = 0;
 	this->mInstructionCounter = 0;
@@ -18,17 +18,33 @@ ComputerSimulator::ComputerSimulator()
 // brief: destroys the computer
 // return: none
 // precons: none
-ComputerSimulator::~ComputerSimulator(){/*Empty*/}
+ComputerSimulator::~ComputerSimulator()
+{
+	this->mLoadFile.close();
+}
+
+
 
 // brief: loads instructions and runs them
 // return: none
 // precons: none
-void ComputerSimulator::runComputer()
+void ComputerSimulator::runComputerWithManualInput()
 {
 	this->getInstructions();
 	this->runProgram();
 }
 
+void ComputerSimulator::runComputerWithFileInput()
+{
+	if (this->loadInstructions())
+	{
+		this->runProgram();
+	}
+	else
+	{
+		cout << "*** Error Loading Program***" << endl;
+	}
+}
 /// Private
 
 // brief: prints initial prompt for instruction input
@@ -74,31 +90,59 @@ void ComputerSimulator::getInstructions()
 	cout << "*** Program loading completed ***" << endl;
 }
 
+bool ComputerSimulator::loadInstructions()
+{
+	cout << "*** Loading Instructions ***" << endl;
+	if (mLoadFile.is_open())
+	{
+		char buffer[9];
+		int counter = 0, temp = 0;
+		while (!mLoadFile.eof()) 
+		{
+			mLoadFile.getline(buffer, 9, '\n');
+
+			temp = atoi(buffer + 3); // ignores line numbers
+
+			this->mMemory[counter] = temp;
+			++counter;
+		}
+	}
+	else
+	{
+		cout << "*** File Failed To Load Properly ***" << endl;
+	}
+}
+
 // brief: dumps registers and memory to screen
 // return: none
 // precons: none
 void ComputerSimulator::regiserAndMemoryDump()
 {
 	cout << "REGISTERS:" << endl;
-	cout << "accumulator: " << setw(5) << setfill('0') << std::internal << std::showpos << this->mAccumulator  << endl;
-	cout << "instructionCounter: " << setw(2) << noshowpos << this->mInstructionCounter << endl;
-	cout << "instructionRegister: "  << setw(5) << showpos << this->mInstructionRegister << endl;
+	cout << "accumulator: " << setw(MEMORY_DIGITS + 2) << setfill('0') << std::internal << std::showpos << this->mAccumulator << endl;
+	// istructionCounter is incremented immediatly so this fixes it in the dump
+	cout << "instructionCounter: " << setw(MEMORY_DIGITS - 1) << noshowpos << this->mInstructionCounter - 1 << endl;
+	cout << "instructionRegister: "  << setw(MEMORY_DIGITS + 2) << showpos << this->mInstructionRegister << endl;
 	cout << "operationCode: " << setw(2) << noshowpos << this->mOperationCode << endl;
-	cout << "operand: " << setw(2) << noshowpos << this->mOperand << endl;
+	cout << "operand: " << setw(MEMORY_DIGITS - 1) << noshowpos << this->mOperand << endl;
 	
 	cout << endl << "Memory:" << endl;
-	cout << "   " << setfill(' ');
+	for (int i = 0; i < MEMORY_DIGITS; ++i)
+	{
+		cout << " ";
+	}
+	cout /*<< "    "*/ << setfill(' ');
 	for (int i = 0; i < 10; i++)
 	{
-		cout << setw(5) << i << " ";
+		cout << setw(MEMORY_DIGITS + 2) << i << " ";
 	}
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < TOTAL_MEMORY; i++)
 	{
 		if (i % 10 == 0)
 		{
-			cout << endl << setw(2) << setfill(' ') << noshowpos << (i / 10) * 10 << " ";
+			cout << endl << setw(MEMORY_DIGITS - 1) << setfill('0') << noshowpos << /*(i / 10) * 10*/i << " ";
 		}
-		cout << setw(5) << setfill('0') << showpos << this->mMemory[i] << ' ';
+		cout << setw(MEMORY_DIGITS + 2) << setfill('0') << showpos << this->mMemory[i] << ' ';
 	}
 	cout << endl;
 
@@ -136,6 +180,9 @@ void ComputerSimulator::runInstructions()
 			break;
 		case MULTIPLY:
 			multiply();
+			break;
+		case MODULUS:
+			modulus();
 			break;
 		case BRANCH:
 			branch();
@@ -246,9 +293,9 @@ void ComputerSimulator::add()
 void ComputerSimulator::subtract()
 {
 	mAccumulator -= mMemory[this->mOperand];
-	if (mAccumulator < MIN_WORD_SIZE)
+	if (mAccumulator > MAX_WORD_SIZE || mAccumulator < MIN_WORD_SIZE)
 	{
-		cout << "*** Accumulator Underflow ***" << endl;
+		cout << "*** Accumulator Overflow ***" << endl;
 		cout << "*** Simpletron execution abnormally terminated ***" << endl;
 		halt();
 	}
@@ -279,12 +326,30 @@ void ComputerSimulator::divide()
 void ComputerSimulator::multiply()
 {
 	mAccumulator *= mMemory[this->mOperand];
-	if (mAccumulator > 9999 || mAccumulator < -9999)
+	if (mAccumulator > MAX_WORD_SIZE || mAccumulator < MIN_WORD_SIZE)
 	{
 		mAccumulator = 0;
 		cout << "*** Accumulator Overflow ***" << endl;
 		cout << "*** Simpletron execution abnormally terminated ***" << endl;
 		halt();
+	}
+}
+
+// brief: Modulus a word from a specific location in memory by the
+//			word in the accumulator(leave result in accumulator).
+// return: none
+// precons: current instruction has been divided into operand, and code
+void ComputerSimulator::modulus()
+{
+	if (mMemory[this->mOperand] == 0)
+	{
+		cout << "*** Attempt to divide by zero ***" << endl;
+		cout << "*** Simpletron execution abnormally terminated ***" << endl;
+		halt();
+	}
+	else
+	{
+		mAccumulator %= mMemory[this->mOperand];
 	}
 }
 

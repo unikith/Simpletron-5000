@@ -2,10 +2,12 @@
 
 #include <iomanip>
 #include <iostream>
+#include <fstream>
 
 using std::cin;
 using std::cout;
 using std::endl;
+using std::ifstream;
 using std::setw;
 using std::showpos;
 using std::noshowpos;
@@ -24,6 +26,7 @@ using std::setfill;
 #define SUBTRACT 31
 #define DIVIDE 32
 #define MULTIPLY 33
+#define MODULUS 34
 #define BRANCH 40
 #define BRANCHNEG 41
 #define BRANCHZERO 42
@@ -32,10 +35,12 @@ using std::setfill;
 class ComputerSimulator
 {
 public:
-	ComputerSimulator();
+	ComputerSimulator(const char * fileName);
 	~ComputerSimulator();
 
-	void runComputer();
+	void runComputerWithManualInput();
+
+	void runComputerWithFileInput();
 
 private:
 	int mMemory[TOTAL_MEMORY] = { 0 }; // represents the memory of simpletron
@@ -44,9 +49,11 @@ private:
 	int mOperationCode; // two digit code for operation
 	int mOperand; // two digit code for operand location
 	int mInstructionRegister; // register for instructions
+	ifstream mLoadFile; // file that contains instructions
 	
 	void printPrompt();
 	void getInstructions();
+	bool loadInstructions();
 	void regiserAndMemoryDump();
 	void runInstructions();
 	void splitInstructionWord();
@@ -61,6 +68,7 @@ private:
 	void subtract();
 	void divide();
 	void multiply();
+	void modulus();
 	void branch();
 	void branchNeg();
 	void branchZero();
