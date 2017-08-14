@@ -6,13 +6,14 @@
 ///			problem from sec. 8 and 19
 ///////////////////////////////////////////////////////////////////
 
+#include "Compiler.h"
 #include "ComputerSimulator.h"
 
 int main(void)
 {
 
-	ComputerSimulator Simpletron;
-	Simpletron.runComputer();
+	ComputerSimulator Simpletron("ComputerInstructions.txt");
+	Simpletron.runComputerWithFileInput();
 
 	return 0;
 }

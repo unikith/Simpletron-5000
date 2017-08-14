@@ -49,7 +49,7 @@ string Compiler::infixToPostfix(string  & infixExpresssion)
 				postfix.append(string(1, theStack.top()));
 				theStack.pop();
 			}
-			postfix.append(string(1, currentChar));
+			theStack.push(currentChar);
 		}
 		else if(currentChar == ')')
 		{
@@ -63,7 +63,7 @@ string Compiler::infixToPostfix(string  & infixExpresssion)
 		infixCounter++;
 	}
 
-	return string();
+	return postfix;
 }
 
 bool Compiler::isOperator(char toCheck)
@@ -93,10 +93,16 @@ bool Compiler::precedenceExpression(char op1, char op2)
 	case '+':
 	case '-':
 		pres1 = 1;
+		break;
 	case '*':
 	case '/':
 	case '%':
 		pres1 = 2;
+		break;
+	case ')':
+	case '(':
+		pres1 = 0;
+		break;
 	default:
 		pres1 = 0;
 		break;
@@ -107,10 +113,16 @@ bool Compiler::precedenceExpression(char op1, char op2)
 	case '+':
 	case '-':
 		pres2 = 1;
+		break;
 	case '*':
 	case '/':
 	case '%':
 		pres2 = 2;
+		break;
+	case ')':
+	case '(':
+		pres2 = 0;
+		break;
 	default:
 		pres2 = 0;
 		break;

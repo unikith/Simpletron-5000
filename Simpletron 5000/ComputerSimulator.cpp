@@ -90,8 +90,11 @@ void ComputerSimulator::getInstructions()
 	cout << "*** Program loading completed ***" << endl;
 }
 
+// loads instructions from the load file associated with the computer at instantiation
+//Format must be in form 00 +0000, where 0's can be any digit
 bool ComputerSimulator::loadInstructions()
 {
+	bool success = true;
 	cout << "*** Loading Instructions ***" << endl;
 	if (mLoadFile.is_open())
 	{
@@ -110,7 +113,9 @@ bool ComputerSimulator::loadInstructions()
 	else
 	{
 		cout << "*** File Failed To Load Properly ***" << endl;
+		success = false;
 	}
+	return success;
 }
 
 // brief: dumps registers and memory to screen

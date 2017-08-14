@@ -15,7 +15,7 @@ public:
 	// evaluates an infix expression and returns an integer
 	int evalutateExpression(string & expression);
 
-private:
+//private:
 	// takes an infix expression in string format and 
 	// turns it into a postfix expression in string format
 	string infixToPostfix(string  & infixExpresssion);
